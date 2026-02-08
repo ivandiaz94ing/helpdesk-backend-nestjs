@@ -1,3 +1,4 @@
+import { Comment } from 'src/comments/entities/comment.entity';
 import { Ticket } from 'src/ticket/entities';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -33,4 +34,11 @@ export class User {
         { eager: false }
     )
     tickets: Ticket[];
+
+    // Un usuario -> Muchos comentarios
+    @OneToMany(
+        () => Comment,
+        (comment) => comment.user
+    )
+    comments: Comment[];
 }

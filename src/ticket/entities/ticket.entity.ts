@@ -1,8 +1,8 @@
 import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { TicketPriority } from "../enums/ticket-priority.enum";
 import { TicketStatus } from "../enums/ticket-status.enum";
-import { TicketComentario } from "./ticket-cometario.entity";
 import { User } from "src/user/entities/user.entity";
+import { Comment } from "src/comments/entities/comment.entity";
 
 
 @Entity('tickets')
@@ -50,12 +50,19 @@ export class Ticket {
     @Column('text', {
         nullable: true
     })
-    userAsigned?: string;
+    userAsigned: string;
 
     @Column({
         type: 'timestamp with time zone',
     })
     createdAt: Date;
+
+    // Un ticket -> Muchos comentarios
+    @OneToMany(
+        () => Comment,
+        (comment) => comment.ticket
+    )
+    comments: Comment[];
 
     @UpdateDateColumn({
         type: 'timestamp',
@@ -70,13 +77,14 @@ export class Ticket {
         { eager: true }
     )
     user: User;
-    
-    @OneToMany(
-        () => TicketComentario,
-        (comentario) => comentario.ticket,
-        { cascade: true }
-    )
-    comentarios?: TicketComentario[];
+  
+    //borrar esta relacion
+    // @OneToMany(
+    //     () => TicketComentario,
+    //     (comentario) => comentario.ticket,
+    //     { cascade: true }
+    // )
+    // comentarios?: TicketComentario[];
     
     @BeforeInsert()
     setCreatedAt() {
