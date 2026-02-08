@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Body, UseGuards, Patch, Param } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './decorators/get-user-decorator';
-import { User } from './entities/user.entity';
 import { GetRowHeaders } from './decorators/get-rowHeader-decorator';
 import { UserRoleGuard } from './guards/user-role.guard';
 import { RoleProtected } from './decorators/role-protected.decorator';
-import { ValidRoles } from './interfaces/validRoles';
 import { Auth } from './decorators/auth-decorator';
+import { User } from './entities/user.entity';
+import { ValidRoles } from './interfaces/validRoles';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +23,15 @@ export class UserController {
   login(@Body() loginUserDto: LoginUserDto) {
     return this.userService.login(loginUserDto);
   }
+
+  @Get('check-status')
+  @Auth()
+  checkAuthStatus(
+    @GetUser() user: User,
+  ){
+    return this.userService.checkAuthStatus(user);
+  } 
+  
   @Get()
   @Auth(ValidRoles.ADMIN)
   findAllUsers() {
