@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { TicketController } from './ticket.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Ticket, TicketComentario } from './entities';
+import { Ticket } from './entities';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
@@ -10,8 +10,7 @@ import { UserModule } from 'src/user/user.module';
   providers: [TicketService],
   imports: [
     TypeOrmModule.forFeature([
-      Ticket, 
-      TicketComentario
+      Ticket
     ]),  
       UserModule
 ]

@@ -19,8 +19,7 @@ export class TicketService {
   }
 
   async create(createTicketDto: CreateTicketDto, user: User) {
-    try {
-      
+    try { 
       const ticket = this.ticketRepository.create({
         ...createTicketDto,
         user});
@@ -29,35 +28,23 @@ export class TicketService {
       
     } catch (error) {
       console.log(error);
-      
     }
   }
 
-  // findAll() {
-  //   const tickets = this.ticketRepository.find();
-  //   return tickets;
-  // }
-  
-  // async findAllFiltered(priority?: TicketPriority) {
-  //   if (priority) {
-  //     return await this.ticketRepository.find({
-  //       where: priority ? { priority } :{},
-  //       order: { createdAt: 'DESC' }
-  //     });
-  //   }
-  // }
 
   async findAllFiltered(filterDto: GetTicketsFilterDto) {
   // Creamos el objeto de opciones
-  const {status, priority} = filterDto;
+  const {status, priority, userId} = filterDto;
   const whereOptions: any = {};
 
   if(status) whereOptions.status = status;
   if(priority) whereOptions.priority = priority;
+  if(userId) whereOptions.user = { id: userId };
 
   return await this.ticketRepository.find({
     where: whereOptions,
-    order: { createdAt: 'DESC' }
+    order: { createdAt: 'DESC' },
+    relations: {user: true}
   });
   }
 

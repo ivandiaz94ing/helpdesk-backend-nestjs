@@ -28,7 +28,7 @@ export class TicketController {
   // }
 
   @Get()
-  @Auth(ValidRoles.ADMIN, ValidRoles.AGENT)
+  @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)
   findAllFiltered(@Query() filterDto: GetTicketsFilterDto) {
   return this.ticketService.findAllFiltered(filterDto);
   }

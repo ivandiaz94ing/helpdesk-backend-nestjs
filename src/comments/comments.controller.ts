@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -10,10 +10,10 @@ import { GetUser } from 'src/user/decorators/get-user-decorator';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Post('idTicket')
+  @Post(':idTicket')
   @Auth()
   create(
-    @Param('idTicket') idTicket: string,
+    @Param('idTicket', ParseUUIDPipe) idTicket: string,
     @Body() createCommentDto: CreateCommentDto,
     @GetUser() user: User
   ) {

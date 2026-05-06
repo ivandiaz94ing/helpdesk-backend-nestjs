@@ -41,6 +41,7 @@ export class UserService {
       this.handleError(error);
     }
   }
+  
   async updateUserRole(id: string) {
     console.log('Implementando metodo de actualizacion de usuario');
   } 

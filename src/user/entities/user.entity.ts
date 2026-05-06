@@ -24,9 +24,9 @@ export class User {
     
     @Column('text', {
         array: true,
-        default: ['cliente']
+        default: ['client']
     })
-    roles: string[]= ['cliente'];
+    roles: string[]= ['client'];
 
     @OneToMany(
         () => Ticket,

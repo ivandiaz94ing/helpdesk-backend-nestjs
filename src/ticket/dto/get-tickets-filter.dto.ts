@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional } from "class-validator";
+import { IsEnum, IsOptional, IsUUID } from "class-validator";
 import { TicketPriority } from "../enums/ticket-priority.enum";
 import { TicketStatus } from "../enums/ticket-status.enum";
 
@@ -14,4 +14,8 @@ export class GetTicketsFilterDto {
         message: 'El estado debe ser abierto, en proceso o cerrado',
     })
     status?: TicketStatus;
+
+    @IsOptional()
+    @IsUUID()
+    userId?: string;
 }

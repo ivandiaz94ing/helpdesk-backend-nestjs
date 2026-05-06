@@ -1,6 +1,6 @@
 import { Ticket } from 'src/ticket/entities';
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Comment {
@@ -22,4 +22,9 @@ export class Comment {
   // Relación 2: A qué ticket pertenece
   @ManyToOne(() => Ticket, (ticket) => ticket.comments)
   ticket: Ticket;
+
+      @BeforeInsert()
+      setCreatedAt() {
+          this.createdAt = new Date();
+      }
 }
