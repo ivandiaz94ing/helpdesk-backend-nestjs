@@ -46,49 +46,4 @@ export class UserController {
       return this.userService.updateUserRole(id);
   }
 
-  @Get('private')
-  @UseGuards(AuthGuard())
-  testingPrivateRoute(
-    @GetUser() user: User,
-    @GetUser('email') userEmail: string,
-    @GetRowHeaders() rowHeaders: string[]
-  ){
-    return{
-      ok: true,
-      message: 'This is a private route',
-      user,
-      userEmail,
-      rowHeaders
-      
-    }
-
-  }
-  // @SetMetadata('roles', ['admin', 'agent'])
-
-  @Get('private2')
-  @RoleProtected(ValidRoles.CLIENT)
-  @UseGuards(AuthGuard(), UserRoleGuard)
-  privateRoute2(
-    @GetUser() user: User,
-  ){
-    return{
-      ok: true,
-      // message: 'Agregar este guard a la ruta de consultar todos los tickets',
-      message: 'Los admin son los unicos que pueden acceder a la ruta de consultar usuarios y actualizar roles',
-      user,
-    }
-  }
-
-  @Get('private3')
-  @Auth(ValidRoles.ADMIN)
-  privateRoute3(
-    @GetUser() user: User,
-  ){
-    return{
-      ok: true,
-      message: 'hola',
-      user,
-    }
-
-  }
 }

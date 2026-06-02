@@ -44,6 +44,9 @@ export class UserService {
   
   async updateUserRole(id: string) {
     console.log('Implementando metodo de actualizacion de usuario');
+    return {
+      message: `User with id ${id} has been updated`
+    };
   } 
 
   async login( loginUserDto: LoginUserDto ) {
