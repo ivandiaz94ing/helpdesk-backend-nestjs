@@ -61,10 +61,10 @@ export class UserService {
     });
 
     if (!user) 
-      throw new BadRequestException('Credentials are not valid (email)');
+      throw new BadRequestException('Credentials are not valid');
     
     if (!bcrypt.compareSync(password, user.password))
-      throw new BadRequestException('Credentials are not valid (password)');
+      throw new BadRequestException('Credentials are not valid');
 
     return {
       id: user.id,
@@ -84,12 +84,13 @@ export class UserService {
     return token;
   }
 
-  handleError(error: any){
+  private handleError(error: any){
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
+    }
       console.log(error);
       throw new InternalServerErrorException('Please check server logs'); 
-    }
+    
   }
 
   }
