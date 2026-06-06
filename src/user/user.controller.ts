@@ -4,7 +4,6 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { GetUser } from './decorators/get-user-decorator';
-import { GetRowHeaders } from './decorators/get-rowHeader-decorator';
 import { UserRoleGuard } from './guards/user-role.guard';
 import { RoleProtected } from './decorators/role-protected.decorator';
 import { Auth } from './decorators/auth-decorator';
@@ -35,7 +34,7 @@ export class UserController {
   } 
   
   @Get()
-  @Auth(ValidRoles.ADMIN)
+  @Auth(ValidRoles.CLIENT)
   findAllUsers() {
     return this.userService.findAllUsers();
   }

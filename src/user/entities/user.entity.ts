@@ -1,4 +1,4 @@
-import { Comment } from 'src/comments/entities/comment.entity';
+import { Comment } from 'src/comments/entities';
 import { Ticket } from 'src/ticket/entities';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -13,20 +13,24 @@ export class User {
     })
     email: string;
     
-    @Column('text')
+    @Column('text', {
+        select: false
+    })
     password: string;
     
     @Column('text')
     fullname: string;
     
-    @Column('bool')
-    isActive: boolean=true;
+    @Column('bool', {
+        default: true
+    })
+    isActive: boolean;
     
     @Column('text', {
         array: true,
         default: ['client']
     })
-    roles: string[]= ['client'];
+    roles: string[];
 
     @OneToMany(
         () => Ticket,
