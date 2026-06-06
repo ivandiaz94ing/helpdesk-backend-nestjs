@@ -22,10 +22,6 @@ export class TicketController {
     return this.ticketService.create(createTicketDto, user);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.ticketService.findAll();
-  // }
 
   @Get()
   @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)

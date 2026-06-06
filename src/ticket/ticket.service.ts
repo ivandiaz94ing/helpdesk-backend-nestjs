@@ -3,7 +3,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from './entities/ticket.entity';
-import { Filter, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { TicketPriority } from './enums/ticket-priority.enum';
 import { GetTicketsFilterDto } from './dto/get-tickets-filter.dto';
 import { User } from 'src/user/entities/user.entity';
@@ -72,6 +72,6 @@ export class TicketService {
     const ticket = await this.findOne(id);
     
     await this.ticketRepository.delete(id);
-
+    return ticket;
     }
 }

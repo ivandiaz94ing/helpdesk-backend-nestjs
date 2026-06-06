@@ -1,4 +1,4 @@
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsEnum, IsString, MaxLength, MinLength } from "class-validator";
 import { TicketPriority } from "../enums/ticket-priority.enum";
 import { TicketStatus } from "../enums/ticket-status.enum";
 
@@ -12,12 +12,10 @@ export class CreateTicketDto {
     @MinLength(5)
     description: string;
     
-    @IsString()
-    @MinLength(4)
+    @IsEnum(TicketPriority, { message: `priority must be one of the following values: ${Object.values(TicketPriority).join(', ')}` })
     priority: TicketPriority;
 
-    @IsString()
-    @MinLength(5)
+    @IsEnum(TicketStatus, { message: `status must be one of the following values: ${Object.values(TicketStatus).join(', ')}` })
     status: TicketStatus;
 
 }
