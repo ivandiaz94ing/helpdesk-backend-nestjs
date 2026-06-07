@@ -64,12 +64,6 @@ export class Ticket {
     )
     comments: Comment[];
 
-    @UpdateDateColumn({
-        type: 'timestamp',
-        nullable: true,
-        default: null,
-    })
-    updatedAt: Date | null;
 
     @ManyToOne(
         () => User,
@@ -77,18 +71,29 @@ export class Ticket {
         { eager: true }
     )
     user: User;
-  
-    //borrar esta relacion
-    // @OneToMany(
-    //     () => TicketComentario,
-    //     (comentario) => comentario.ticket,
-    //     { cascade: true }
+
+    // Un ticket -> Un usuario asignado (opcional) 
+    /* Verificar si se puede hacer una relación con el mismo modelo
+        User para el usuario asignado, o si se debe manejar como un 
+        campo de texto con el id del usuario asignado*/
+
+    // @ManyToOne(
+    //     () => User,
+    //     (user) => user.tickets,
     // )
-    // comentarios?: TicketComentario[];
+    // userAsigned: User;
+  
     
     @BeforeInsert()
     setCreatedAt() {
         this.createdAt = new Date();
         this.updatedAt = null;
     }
+
+    @UpdateDateColumn({
+        type: 'timestamp',
+        nullable: true,
+        default: null,
+    })
+    updatedAt: Date | null;
 }
