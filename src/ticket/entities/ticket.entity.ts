@@ -53,9 +53,18 @@ export class Ticket {
     userAsigned: string;
 
     @Column({
-        type: 'timestamp with time zone',
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
     })
     createdAt: Date;
+
+    @UpdateDateColumn({
+        type: 'timestamp',
+        nullable: true,
+        default: null,
+    })
+    updatedAt: Date | null;
+    
 
     // Un ticket -> Muchos comentarios
     @OneToMany(
@@ -90,10 +99,5 @@ export class Ticket {
         this.updatedAt = null;
     }
 
-    @UpdateDateColumn({
-        type: 'timestamp',
-        nullable: true,
-        default: null,
-    })
-    updatedAt: Date | null;
+
 }
