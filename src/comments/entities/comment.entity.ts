@@ -11,7 +11,8 @@ export class Comment {
   message: string;
 
   @Column({
-    type: 'timestamp with time zone',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 

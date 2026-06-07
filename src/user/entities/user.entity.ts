@@ -32,6 +32,7 @@ export class User {
     })
     roles: string[];
 
+    // Un usuario -> Muchos tickets
     @OneToMany(
         () => Ticket,
         (ticket) => ticket.user,
