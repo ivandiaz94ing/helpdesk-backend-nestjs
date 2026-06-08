@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -20,7 +20,9 @@ export class UserService {
   ){}
 
   async findAllUsers() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      where: { isActive: true },
+    });
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -48,6 +50,32 @@ export class UserService {
       message: `User with id ${id} has been updated`
     };
   } 
+
+  async findOne(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    
+    if (!user) {
+      throw new NotFoundException(`El usuario con el id ${id} no fue encontrado`);
+    }
+    
+    return user;
+  }
+
+  async remove(id: string) {
+    // 1. Verificamos que el usuario exista
+    const user = await this.findOne(id);
+
+    // 2. Le cambiamos el estado a inactivo
+    user.isActive = false;
+
+    // 3. Guardamos los cambios
+    await this.userRepository.save(user);
+
+    // 4. Retornamos el mensaje de confirmación
+    return {
+      message: `El usuario ${user.fullname} ha sido de baja exitosamente`
+    };
+  }
 
   async login( loginUserDto: LoginUserDto ) {
     const { email, password } = loginUserDto;
