@@ -44,11 +44,27 @@ export class UserService {
     }
   }
   
-  async updateUserRole(id: string) {
-    console.log('Implementando metodo de actualizacion de usuario');
-    return {
-      message: `User with id ${id} has been updated`
-    };
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    // 1. Buscamos el usuario con tu método que ya lanza el 404
+    const user = await this.findOne(id);
+
+    try {
+      // 2. 🛡️ SEGURIDAD: Si viene una contraseña, la encriptamos ANTES de fusionar
+      if (updateUserDto && updateUserDto.password) {
+        updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10);
+      }
+
+      // 3. Fusionamos el DTO con el usuario encontrado (solo si hay datos)
+      if (updateUserDto && Object.keys(updateUserDto).length > 0) {
+        this.userRepository.merge(user, updateUserDto);
+      }
+
+      // 4. Guardamos en la base de datos
+      await this.userRepository.save(user);
+      return user;
+    } catch (error) {
+      this.handleError(error);
+    }
   } 
 
   async findOne(id: string) {
@@ -64,6 +80,10 @@ export class UserService {
   async remove(id: string) {
     // 1. Verificamos que el usuario exista
     const user = await this.findOne(id);
+    
+    if (user.isActive === false) {
+      throw new BadRequestException(`Usuario ${user.fullname} no fué encontrado`);
+    }
 
     // 2. Le cambiamos el estado a inactivo
     user.isActive = false;
@@ -105,7 +125,6 @@ export class UserService {
       token: this.getJwtToken({ id: user.id })
     }
   }
-  
 
   private getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
