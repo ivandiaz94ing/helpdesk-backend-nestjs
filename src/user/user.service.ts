@@ -47,20 +47,22 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     // 1. Buscamos el usuario con tu método que ya lanza el 404
     const user = await this.findOne(id);
+    
+    // Retorno temprano si no hay campos en el DTO
+    if (!updateUserDto || Object.keys(updateUserDto).length === 0) {
+      return user;
+    }
 
     try {
       // 2. 🛡️ SEGURIDAD: Si viene una contraseña, la encriptamos ANTES de fusionar
-      if (updateUserDto && updateUserDto.password) {
+      if (updateUserDto.password) {
         updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10);
       }
 
-      // 3. Fusionamos el DTO con el usuario encontrado (solo si hay datos)
-      if (updateUserDto && Object.keys(updateUserDto).length > 0) {
-        this.userRepository.merge(user, updateUserDto);
-      }
+      this.userRepository.merge(user, updateUserDto);
+      this.userRepository.save(user);
 
-      // 4. Guardamos en la base de datos
-      await this.userRepository.save(user);
+      delete user.password;
       return user;
     } catch (error) {
       this.handleError(error);
@@ -117,7 +119,7 @@ export class UserService {
     if (!user.isActive)
       throw new BadRequestException('User is inactive');
     
-    if (!bcrypt.compareSync(password, user.password))
+    if (!user.password || !bcrypt.compareSync(password, user.password))
       throw new BadRequestException('Credentials are not valid');
 
     return {
