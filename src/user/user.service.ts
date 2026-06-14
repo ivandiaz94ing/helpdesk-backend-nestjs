@@ -73,6 +73,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`El usuario con el id ${id} no fue encontrado`);
     }
+
     
     return user;
   }
@@ -102,21 +103,30 @@ export class UserService {
     const user =  await this.userRepository.findOne({ 
       where: { email }, 
       select: { 
-        email: true, 
+        id: true,  
         password: true,
-        id: true  
+        email: true,
+        fullname: true,
+        roles: true,
+        isActive: true
       }
     });
 
     if (!user) 
       throw new BadRequestException('Credentials are not valid');
+    if (!user.isActive)
+      throw new BadRequestException('User is inactive');
     
     if (!bcrypt.compareSync(password, user.password))
       throw new BadRequestException('Credentials are not valid');
 
     return {
       id: user.id,
-      token: this.getJwtToken({ id: user.id })};
+      email: user.email,
+      fullname: user.fullname,
+      token: this.getJwtToken({ id: user.id }),
+    }
+
   }
 
   async checkAuthStatus(user: User) {
