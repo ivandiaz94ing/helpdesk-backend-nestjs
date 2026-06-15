@@ -3,6 +3,7 @@ import { TicketPriority } from "../enums/ticket-priority.enum";
 import { TicketStatus } from "../enums/ticket-status.enum";
 import { User } from "src/user/entities/user.entity";
 import { Comment } from "src/comments/entities/comment.entity";
+import { Equipo } from "src/equipo/entities/equipo.entity";
 
 
 @Entity('tickets')
@@ -73,7 +74,7 @@ export class Ticket {
     )
     comments: Comment[];
 
-
+    // Un ticket -> Un usuario
     @ManyToOne(
         () => User,
         (user) => user.tickets,
@@ -81,16 +82,14 @@ export class Ticket {
     )
     user: User;
 
-    // Un ticket -> Un usuario asignado (opcional) 
-    /* Verificar si se puede hacer una relación con el mismo modelo
-        User para el usuario asignado, o si se debe manejar como un 
-        campo de texto con el id del usuario asignado*/
+    // Un ticket -> Un equipo
+    @ManyToOne(
+        () => Equipo,
+        (equipo) => equipo.tickets,
+        { eager: true }
+    )
+    equipo: Equipo;
 
-    // @ManyToOne(
-    //     () => User,
-    //     (user) => user.tickets,
-    // )
-    // userAsigned: User;
   
     
     @BeforeInsert()
