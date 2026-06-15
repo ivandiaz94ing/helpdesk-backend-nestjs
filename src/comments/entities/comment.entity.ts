@@ -19,7 +19,7 @@ export class Comment {
   // Relación 1: Quién escribió el comentario
   @ManyToOne(() => User, (user) => user.comments)
   user: User;
-
+  
   // Relación 2: A qué ticket pertenece
   @ManyToOne(() => Ticket, (ticket) => ticket.comments)
   ticket: Ticket;

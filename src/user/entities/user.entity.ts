@@ -31,13 +31,21 @@ export class User {
     })
     roles: string[];
 
+    // Un tecnico -> Muchos tickets
+    @OneToMany(
+        () => Ticket,
+        (ticket) => ticket.tecnico,
+        { eager: false }
+    )
+    ticketsAsigned: Ticket[];
+
     // Un usuario -> Muchos tickets
     @OneToMany(
         () => Ticket,
         (ticket) => ticket.user,
         { eager: false }
     )
-    tickets: Ticket[];
+    ticketsCreated: Ticket[];
 
     // Un usuario -> Muchos comentarios
     @OneToMany(

@@ -48,10 +48,6 @@ export class Ticket {
     })
     status: TicketStatus;
     
-    @Column('text', {
-        nullable: true
-    })
-    userAsigned: string;
 
     @Column({
         type: 'timestamp',
@@ -72,12 +68,20 @@ export class Ticket {
         () => Comment,
         (comment) => comment.ticket
     )
-    comments: Comment[];
+    comments?: Comment[];
 
-    // Un ticket -> Un usuario
+    // Un ticket -> Un técnico
     @ManyToOne(
         () => User,
-        (user) => user.tickets,
+        (tecnico) => tecnico.ticketsAsigned,
+        { eager: true }
+    )
+    tecnico?: User;
+
+    // Un ticket -> Un usuario (cliente)
+    @ManyToOne(
+        () => User,
+        (user) => user.ticketsCreated,
         { eager: true }
     )
     user: User;
