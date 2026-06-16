@@ -18,7 +18,7 @@ export class EquipoController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+   findOne(@Param('id') id: string) {
     return this.equipoService.findOne(+id);
   }
 

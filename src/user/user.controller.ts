@@ -10,6 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { ValidRoles } from './interfaces/validRoles';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -22,6 +23,14 @@ export class UserController {
   @Post('login')
   login(@Body() loginUserDto: LoginUserDto) {
     return this.userService.login(loginUserDto);
+  }
+
+  @Patch('change-password')
+  @Auth()
+  changePassword(
+    @GetUser('id') userId: string, 
+    @Body() changePasswordDto: ChangePasswordDto) {
+    return this.userService.changePassword(userId, changePasswordDto);
   }
 
   @Get('check-status')
@@ -48,7 +57,7 @@ export class UserController {
   }
 
   @Get()
-  @Auth(ValidRoles.CLIENT)
+  @Auth(ValidRoles.ADMIN)
   findAllUsers() {
     return this.userService.findAllUsers();
   }

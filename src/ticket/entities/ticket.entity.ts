@@ -74,7 +74,7 @@ export class Ticket {
     @ManyToOne(
         () => User,
         (tecnico) => tecnico.ticketsAsigned,
-        { eager: true }
+        { eager: false }
     )
     tecnico?: User;
 

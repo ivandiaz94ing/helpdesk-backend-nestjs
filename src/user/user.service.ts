@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -136,6 +137,42 @@ export class UserService {
       ...user,
       token: this.getJwtToken({ id: user.id })
     }
+  }
+
+  async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
+    const { oldPassword, newPassword } = changePasswordDto;
+
+    // Buscamos al usuario incluyendo su password (ya que tiene select: false)
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: {
+        id: true,
+        password: true,
+        email: true,
+        fullname: true,
+        roles: true,
+        isActive: true
+      }
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    // Validar contraseña actual
+    if (!bcrypt.compareSync(oldPassword, user.password)) {
+      throw new BadRequestException('La contraseña actual es incorrecta');
+    }
+
+    // Encriptar y guardar nueva contraseña
+    user.password = bcrypt.hashSync(newPassword, 10);
+    await this.userRepository.save(user);
+
+    delete user.password;
+    return {
+      message: 'Contraseña actualizada correctamente',
+      user
+    };
   }
 
   private getJwtToken(payload: JwtPayload) {
