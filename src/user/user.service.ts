@@ -160,7 +160,7 @@ export class UserService {
     }
 
     // Validar contraseña actual
-    if (!bcrypt.compareSync(oldPassword, user.password)) {
+    if (!user.password || !bcrypt.compareSync(oldPassword, user.password)) {
       throw new BadRequestException('La contraseña actual es incorrecta');
     }
 

@@ -1,15 +1,16 @@
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class ChangePasswordDto {
   @IsString()
-  @MinLength(6, { message: 'The old password must be at least 6 characters' })
+  @MaxLength(50)  
+  @IsNotEmpty()
   oldPassword: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8)
   @MaxLength(50)
   @Matches(
-    /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'The new password must have an Uppercase, lowercase letter and a number'
   }
   )
