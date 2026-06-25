@@ -39,6 +39,12 @@ export class UserController {
     return this.userService.checkAuthStatus(user);
   }
 
+  @Get()
+  @Auth(ValidRoles.ADMIN)
+  findAllUsers() {
+    return this.userService.findAllUsers();
+  }
+
   // 1. Endpoint para el propio usuario (Angular lo usará para pintar el Header/Perfil)
   @Get('profile')
   @Auth() // 🛡️ Protegido: Solo exige que haya un Token válido (cualquier rol)
@@ -48,18 +54,14 @@ export class UserController {
     return this.userService.findOne(userId);
   }
 
+
+
   // 2. Endpoint para ver cualquier usuario por su ID (Para la vista de Administrador)
   @Get(':id')
   @Auth(ValidRoles.ADMIN) // 🛡️ Protegido: Solo administradores
   getUserById(@Param('id', ParseUUIDPipe) id: string) {
     // Reutilizamos la validación UUID que aprendimos y el mismo método del servicio
     return this.userService.findOne(id);
-  }
-
-  @Get()
-  @Auth(ValidRoles.ADMIN)
-  findAllUsers() {
-    return this.userService.findAllUsers();
   }
 
   @Patch(':id')

@@ -28,7 +28,7 @@ export class CreateEquipoDto {
     @ApiProperty({ description: 'ID del usuario/funcionario asignado al equipo', example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11' })
     @IsUUID()
     @IsNotEmpty()
-    usuarioResposableId: string;
+    usuarioResponsableId: string;
 
     @ApiPropertyOptional({ description: 'Estado del equipo', default: true })
     @IsOptional()
