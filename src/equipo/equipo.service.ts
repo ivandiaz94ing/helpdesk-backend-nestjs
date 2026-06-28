@@ -55,8 +55,28 @@ export class EquipoService {
     return equipo;
   }
 
-  update(id: number, updateEquipoDto: UpdateEquipoDto) {
-    return `This action updates a #${id} equipo`;
+  async update(id: string, updateEquipoDto: UpdateEquipoDto) {
+    if(!updateEquipoDto || Object.keys(updateEquipoDto).length === 0) {
+      throw new NotFoundException('No se proporcionaron datos para actualizar el equipo');
+    }
+    // 1. Separo el id de usuario del resto de los datos a actualizar 
+    const { usuarioResponsableId, ...equipoData } = updateEquipoDto;
+    // 2. Buscar el equipo actual
+    const equipo = await this.findOne(id);
+    // 3. Si se solicita actualizar el usuario responsable, buscar la entidad completa 
+    if (usuarioResponsableId) {
+      const nuevoUsuario = await this.userService.findOne(usuarioResponsableId);
+      equipo.user = nuevoUsuario;
+    }
+    // 4. Mezclar el resto de campos (marca, nombre, modelo, etc.) 
+    this.equipoRepository.merge(equipo, equipoData);
+    // 5. Guardar los cambios en la base de datos para persistirlos 
+    try {
+      await this.equipoRepository.save(equipo);
+      return equipo;
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   async remove(id: string) {
