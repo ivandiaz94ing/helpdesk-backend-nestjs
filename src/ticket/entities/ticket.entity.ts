@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/user/entities/user.entity";
 import { Comment } from "src/comments/entities/comment.entity";
 import { Equipo } from "src/equipo/entities/equipo.entity";
@@ -62,7 +62,9 @@ export class Ticket {
         default: null,
     })
     updatedAt: Date | null;
-    
+
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 
     // Un ticket -> Muchos comentarios
     @OneToMany(

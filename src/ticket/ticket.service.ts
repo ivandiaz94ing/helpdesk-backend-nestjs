@@ -71,7 +71,7 @@ export class TicketService {
   async remove(id: string) {
     const ticket = await this.findOne(id);
     
-    await this.ticketRepository.delete(id);
+    await this.ticketRepository.softRemove(ticket);
     return ticket;
     }
 }
