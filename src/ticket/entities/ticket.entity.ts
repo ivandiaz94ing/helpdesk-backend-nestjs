@@ -1,9 +1,8 @@
 import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { TicketPriority } from "../enums/ticket-priority.enum";
-import { TicketStatus } from "../enums/ticket-status.enum";
 import { User } from "src/user/entities/user.entity";
 import { Comment } from "src/comments/entities/comment.entity";
 import { Equipo } from "src/equipo/entities/equipo.entity";
+import { TicketPriority, TicketCategory, TicketStatus } from "../enums";
 
 
 @Entity('tickets')
@@ -36,10 +35,12 @@ export class Ticket {
     )
     priority: TicketPriority;
     
-    @Column('text', {
-        nullable: true,
+    @Column( {
+        type: 'enum',
+        enum: TicketCategory,
+        default: TicketCategory.FALLA_RED
     })
-    categoria: string;
+    categoria: TicketCategory;
     
     @Column({
         type: 'enum',

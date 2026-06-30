@@ -4,8 +4,8 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from './entities/ticket.entity';
 import { Repository } from 'typeorm';
-import { TicketPriority } from './enums/ticket-priority.enum';
 import { GetTicketsFilterDto } from './dto/get-tickets-filter.dto';
+
 import { User } from 'src/user/entities/user.entity';
 
 @Injectable()

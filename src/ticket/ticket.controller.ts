@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { TicketPriority } from './enums/ticket-priority.enum';
 import { GetTicketsFilterDto } from './dto/get-tickets-filter.dto';
+
 import { Auth } from 'src/user/decorators/auth-decorator';
 import { ValidRoles } from 'src/user/interfaces/validRoles';
 import { GetUser } from 'src/user/decorators/get-user-decorator';
