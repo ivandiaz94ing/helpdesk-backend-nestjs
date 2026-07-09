@@ -37,8 +37,8 @@ export class TicketController {
 
   @Patch(':id')
   @Auth(ValidRoles.ADMIN, ValidRoles.AGENT)
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateTicketDto: UpdateTicketDto) {
-    return this.ticketService.update(id, updateTicketDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateTicketDto: UpdateTicketDto, @GetUser() user: User) {
+    return this.ticketService.update(id, updateTicketDto, user);
   }
 
   @Delete(':id')

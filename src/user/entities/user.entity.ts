@@ -26,10 +26,9 @@ export class User {
     isActive: boolean;
     
     @Column('text', {
-        array: true,
-        default: ['client']
+        default: 'client'
     })
-    roles: string[];
+    role: string;
 
     // Un tecnico -> Muchos tickets
     @OneToMany(

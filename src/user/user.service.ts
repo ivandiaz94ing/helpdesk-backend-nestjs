@@ -110,7 +110,7 @@ export class UserService {
         password: true,
         email: true,
         fullname: true,
-        roles: true,
+        role: true,
         isActive: true
       }
     });
@@ -150,7 +150,7 @@ export class UserService {
         password: true,
         email: true,
         fullname: true,
-        roles: true,
+        role: true,
         isActive: true
       }
     });
