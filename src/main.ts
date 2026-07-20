@@ -11,7 +11,11 @@ async function bootstrap() {
   whitelist: true,  
   forbidNonWhitelisted: true,
   }));
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:4200'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  });
    const config = new DocumentBuilder()
     .setTitle('Help Desk API')
     .setDescription('API para la gestión de tickets de soporte')

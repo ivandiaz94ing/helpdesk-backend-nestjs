@@ -122,11 +122,10 @@ export class UserService {
     
     if (!user.password || !bcrypt.compareSync(password, user.password))
       throw new BadRequestException('Credentials are not valid');
+    delete user.password;
 
     return {
-      id: user.id,
-      email: user.email,
-      fullname: user.fullname,
+      user: user,
       token: this.getJwtToken({ id: user.id }),
     }
 
