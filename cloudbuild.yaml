@@ -29,3 +29,5 @@ steps:
 # Aquí le decimos a Cloud Build qué imágenes debe guardar al final del proceso
 images:
   - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:$COMMIT_SHA'
+options:                                                                                      
+  logging: CLOUD_LOGGING_ONLY 
