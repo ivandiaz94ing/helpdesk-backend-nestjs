@@ -10,3 +10,21 @@ services:
     container_name: ticketDB
     volumes:
       - ./postgres:/var/lib/postgresql/data
+  backend:                                                                                    
+        build:                                                                                    
+          context: .                                                                              
+          dockerfile: Dockerfile                                                                  
+        container_name: helpdesk-backend                                                          
+        restart: always                                                                           
+        ports:                                                                                    
+          - "3000:3000" # Cambia el 3000 si tu app de Nest usa otro puerto                        
+        environment:                                                                              
+          - DB_HOST=db # ¡Importante! Lee la nota abajo sobre esto                                
+          - DB_PORT=5432                                                                          
+          - DB_USERNAME=postgres # O el usuario que tengas en tu .env                             
+          - DB_PASSWORD=${DB_PASSWORD}                                                            
+          - DB_NAME=${DB_NAME}                                                                    
+        depends_on:                                                                               
+          - db                                                                                    
+        env_file:                                                                                 
+          - .env       

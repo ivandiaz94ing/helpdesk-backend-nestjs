@@ -1,0 +1,31 @@
+steps:                                                                                        
+      # Paso 1: Construir la imagen Docker                                                        
+      - name: 'gcr.io/cloud-builders/docker'                                                      
+        args:                                                                                     
+          - 'build'                                                                               
+          - '-t'                                                                                  
+          - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:$COMMIT_SHA'            
+          - '.'                                                                                   
+                                                                                                  
+      # Paso 2: Subir la imagen a tu repositorio en Artifact Registry                             
+      - name: 'gcr.io/cloud-builders/docker'                                                      
+        args:                                                                                     
+          - 'push'                                                                                
+          - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:$COMMIT_SHA'            
+                                                                                                  
+      # Paso 3: Desplegar la nueva imagen en Google Cloud Run (El servicio que ejecuta el contenedor)                                                                                     
+      - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'                                          
+        entrypoint: gcloud                                                                        
+        args:                                                                                     
+          - 'run'                                                                                 
+          - 'deploy'                                                                              
+          - '$_SERVICE_NAME' # Nombre de tu app en Cloud Run                                      
+          - '--image'                                                                             
+          - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:$COMMIT_SHA'            
+          - '--region'                                                                            
+          - '$_REGION'                                                                            
+          - '--allow-unauthenticated' # Permite que tu API sea pública (sin login de Google)      
+                                                                                                  
+    # Aquí le decimos a Cloud Build qué imágenes debe guardar al final del proceso                
+    images:                                                                                       
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:$COMMIT_SHA'

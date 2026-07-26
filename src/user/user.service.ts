@@ -133,7 +133,7 @@ export class UserService {
 
   async checkAuthStatus(user: User) {
     return {
-      ...user,
+      user: user,
       token: this.getJwtToken({ id: user.id })
     }
   }
@@ -178,7 +178,7 @@ export class UserService {
     const token = this.jwtService.sign(payload);
     return token;
   }
-
+i
   private handleError(error: any){
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
