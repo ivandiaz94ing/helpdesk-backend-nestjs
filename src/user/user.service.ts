@@ -188,7 +188,14 @@ i
         password: bcrypt.hashSync(password, 10)
       });
       await this.userRepository.save(user);
+      delete user.password;
+      if(userDataToCreate.role) {
       return {
+        user,
+      };
+    }
+    // Si no se especifica un rol, se asume que es un usuario normal
+    return {
         user,
         token: this.getJwtToken({ id: user.id })
       };
