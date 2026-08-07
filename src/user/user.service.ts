@@ -10,6 +10,7 @@ import { User } from './entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { CreateUserAdminDto } from './dto/create-user-admin';
 
 @Injectable()
 export class UserService {
@@ -27,22 +28,12 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      const {password, ...userData} = createUserDto;
+    return this.createUserInternal(createUserDto);
+  }
 
-      const user = this.userRepository.create({
-        ...userData,
-        password: bcrypt.hashSync(password, 10)
-      });
-
-      await this.userRepository.save(user); 
-      return {
-        user,
-        token: this.getJwtToken({ id: user.id })
-      };
-    } catch (error) {
-      this.handleError(error);
-    }
+  //Registro de usario como administrador
+  async createAdminUser(createUserAdminDto: CreateUserAdminDto) {
+    return this.createUserInternal({ ...createUserAdminDto, role: 'admin' });
   }
   
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -188,4 +179,22 @@ i
     
   }
 
+  private async createUserInternal(userDataToCreate: (CreateUserDto | CreateUserAdminDto) & { role?: 'admin'}) {
+    try {
+      const { password, ...userData } = userDataToCreate;
+
+      const user = this.userRepository.create({
+        ...userData,
+        password: bcrypt.hashSync(password, 10)
+      });
+      await this.userRepository.save(user);
+      return {
+        user,
+        token: this.getJwtToken({ id: user.id })
+      };
+    }
+    catch (error) {
+      this.handleError(error);
+    }
+  }
   }

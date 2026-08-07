@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { ValidRoles } from './interfaces/validRoles';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CreateUserAdminDto } from './dto/create-user-admin';
 
 @Controller('user')
 export class UserController {
@@ -20,6 +21,13 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
+  @Post('register-admin')
+  @Auth(ValidRoles.ADMIN)
+  createAdminUser(@Body() createUserAdminDto: CreateUserAdminDto) {                                                                            
+    return this.userService.createAdminUser(createUserAdminDto);                                                                                   
+  } 
+
+
   @Post('login')
   login(@Body() loginUserDto: LoginUserDto) {
     return this.userService.login(loginUserDto);
