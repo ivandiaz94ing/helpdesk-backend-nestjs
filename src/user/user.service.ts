@@ -28,12 +28,12 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    return this.createUserInternal(createUserDto);
+    return this.createUserInternal(createUserDto, true);
   }
 
   //Registro de usario como administrador
   async createAdminUser(createUserAdminDto: CreateUserAdminDto) {
-    return this.createUserInternal({ ...createUserAdminDto, role: 'admin' });
+    return this.createUserInternal(createUserAdminDto, false );
   }
   
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -169,7 +169,7 @@ export class UserService {
     const token = this.jwtService.sign(payload);
     return token;
   }
-i
+
   private handleError(error: any){
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
@@ -179,7 +179,7 @@ i
     
   }
 
-  private async createUserInternal(userDataToCreate: (CreateUserDto | CreateUserAdminDto) & { role?: 'admin'}) {
+  private async createUserInternal(userDataToCreate: CreateUserDto | CreateUserAdminDto, generaToken: boolean) {
     try {
       const { password, ...userData } = userDataToCreate;
 
@@ -189,7 +189,7 @@ i
       });
       await this.userRepository.save(user);
       delete user.password;
-      if(userDataToCreate.role) {
+      if(!generaToken) {
       return {
         user,
       };
