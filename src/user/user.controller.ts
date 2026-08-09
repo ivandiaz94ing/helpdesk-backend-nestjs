@@ -73,7 +73,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.CLIENT)
+  @Auth(ValidRoles.ADMIN)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
