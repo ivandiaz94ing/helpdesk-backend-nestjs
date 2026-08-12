@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +11,7 @@ import { ValidRoles } from 'src/user/interfaces/validRoles';
 
 @Injectable()
 export class TicketService {
+  private readonly logger = new Logger('TicketService');
 
   constructor(
     @InjectRepository(Ticket)
@@ -25,12 +26,14 @@ export class TicketService {
     try { 
       const ticket = this.ticketRepository.create({
         ...createTicketDto,
-        user});
+        user
+      });
       await this.ticketRepository.save(ticket);
       return ticket;
       
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
+      throw new InternalServerErrorException('Error inesperado al crear el ticket. Revisa los logs del servidor.');
     }
   }
 
@@ -82,7 +85,7 @@ export class TicketService {
       ticket.tecnico = tecnico;
     }
   // 2. fusionamos los datos del DTO con el ticket encontrado
-     this.ticketRepository.merge(ticket, updateTicketDto); 
+     this.ticketRepository.merge(ticket, toUpdate); 
   // 3. guardamos el ticket actualizado en la base de datos
       await this.ticketRepository.save(ticket);
     return ticket;

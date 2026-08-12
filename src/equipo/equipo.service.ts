@@ -18,10 +18,9 @@ export class EquipoService {
     //separamos el string del ID del resto de los datos
     const { usuarioResponsableId, ...equipoData } = createEquipoDto;
     //Buscamos el usuario responsable por su ID
-    const usuario =  await this.userService.findOne(usuarioResponsableId);
+    const usuario = await this.userService.findOne(usuarioResponsableId);
     //Armamos el equipo, asignandole el objeto usuario completo
     try {
-
       const nuevoEquipo = this.equipoRepository.create({
         ...equipoData,
         user: usuario,
@@ -35,14 +34,19 @@ export class EquipoService {
 
   private handleError(error: any): never {
     if (error.code === '23505') {
-      throw new NotFoundException('Ya existe un equipo con ese número de serie');
+      throw new NotFoundException(
+        'Ya existe un equipo con ese número de serie',
+      );
     }
     console.log(error);
     throw new InternalServerErrorException('Error al crear el equipo');
   }
 
   findAll() {
-    return this.equipoRepository.find({ where: { isActive: true } });
+    return this.equipoRepository.find({
+      where: { isActive: true },
+      relations: ['user']
+    });
   }
 
   async findOne(id: string) {
@@ -56,21 +60,23 @@ export class EquipoService {
   }
 
   async update(id: string, updateEquipoDto: UpdateEquipoDto) {
-    if(!updateEquipoDto || Object.keys(updateEquipoDto).length === 0) {
-      throw new NotFoundException('No se proporcionaron datos para actualizar el equipo');
+    if (!updateEquipoDto || Object.keys(updateEquipoDto).length === 0) {
+      throw new NotFoundException(
+        'No se proporcionaron datos para actualizar el equipo',
+      );
     }
-    // 1. Separo el id de usuario del resto de los datos a actualizar 
+    // 1. Separo el id de usuario del resto de los datos a actualizar
     const { usuarioResponsableId, ...equipoData } = updateEquipoDto;
     // 2. Buscar el equipo actual
     const equipo = await this.findOne(id);
-    // 3. Si se solicita actualizar el usuario responsable, buscar la entidad completa 
+    // 3. Si se solicita actualizar el usuario responsable, buscar la entidad completa
     if (usuarioResponsableId) {
       const nuevoUsuario = await this.userService.findOne(usuarioResponsableId);
       equipo.user = nuevoUsuario;
     }
-    // 4. Mezclar el resto de campos (marca, nombre, modelo, etc.) 
+    // 4. Mezclar el resto de campos (marca, nombre, modelo, etc.)
     this.equipoRepository.merge(equipo, equipoData);
-    // 5. Guardar los cambios en la base de datos para persistirlos 
+    // 5. Guardar los cambios en la base de datos para persistirlos
     try {
       await this.equipoRepository.save(equipo);
       return equipo;
