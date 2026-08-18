@@ -1,4 +1,3 @@
-import { Equipo } from './../equipo/entities/equipo.entity';
 import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
