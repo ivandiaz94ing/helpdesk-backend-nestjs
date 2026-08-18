@@ -42,8 +42,9 @@ export class Ticket {
     @Column( {
         type: 'enum',
         enum: TicketCategory,
+        default: TicketCategory.FALLA_RED
     })
-    categoria: TicketCategory;
+    category: TicketCategory;
     
     @Column({
         type: 'enum',
