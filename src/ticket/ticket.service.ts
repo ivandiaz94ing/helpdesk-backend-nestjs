@@ -50,7 +50,11 @@ export class TicketService {
   return await this.ticketRepository.find({
     where: whereOptions,
     order: { createdAt: 'DESC' },
-    relations: {user: true}
+    relations: {
+      user: true,
+      equipo: true,
+      tecnico: true
+    }
   });
   }
 
