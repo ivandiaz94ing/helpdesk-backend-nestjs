@@ -1,3 +1,4 @@
+import { Equipo } from './../equipo/entities/equipo.entity';
 import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -8,6 +9,7 @@ import { GetTicketsFilterDto } from './dto/get-tickets-filter.dto';
 
 import { User } from 'src/user/entities/user.entity';
 import { ValidRoles } from 'src/user/interfaces/validRoles';
+import { Equipo } from 'src/equipo/entities/equipo.entity';
 
 @Injectable()
 export class TicketService {
@@ -17,17 +19,31 @@ export class TicketService {
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Equipo)
+    private readonly equipoRepository: Repository<Equipo>
   ) {
     
   }
 
   async create(createTicketDto: CreateTicketDto, user: User) {
+    const { equipoId, ...detallesTicket } = createTicketDto;
+
+    // 1. Buscamos el equipo para asegurarnos de que existe
+    const equipo = await this.equipoRepository.findOne({ where: { id: equipoId } });
+
+    if (!equipo) {
+      throw new NotFoundException(`Equipo con id ${equipoId} no encontrado`);
+    }
+
     try { 
+      // 2. Creamos el ticket con los detalles, asignando el equipo y el usuario
       const ticket = this.ticketRepository.create({
-        ...createTicketDto,
+        ...detallesTicket,
+        equipo,
         user
       });
+
       await this.ticketRepository.save(ticket);
       return ticket;
       

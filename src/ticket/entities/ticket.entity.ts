@@ -9,6 +9,7 @@ import { TicketPriority, TicketCategory, TicketStatus } from "../enums";
 
 export class Ticket {
 
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -25,6 +26,9 @@ export class Ticket {
         nullable: false,
     })
     description: string;
+
+
+
     
     @Column(
         {
@@ -38,7 +42,6 @@ export class Ticket {
     @Column( {
         type: 'enum',
         enum: TicketCategory,
-        default: TicketCategory.FALLA_RED
     })
     categoria: TicketCategory;
     
