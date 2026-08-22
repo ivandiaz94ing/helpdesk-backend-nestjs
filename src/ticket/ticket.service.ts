@@ -68,7 +68,11 @@ export class TicketService {
     relations: {
       user: true,
       equipo: true,
-      tecnico: true
+      tecnico: true,
+
+      comments: {
+        user: true
+      }
     }
   });
   }
