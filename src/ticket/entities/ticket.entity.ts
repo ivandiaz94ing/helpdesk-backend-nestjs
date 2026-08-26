@@ -70,6 +70,9 @@ export class Ticket {
     @DeleteDateColumn()
     deletedAt: Date | null;
 
+    @Column('text', { array: true, default: []})
+    images: string[];
+
     // Un ticket -> Muchos comentarios
     @OneToMany(
         () => Comment,

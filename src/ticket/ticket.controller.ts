@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -8,6 +8,7 @@ import { Auth } from 'src/user/decorators/auth-decorator';
 import { ValidRoles } from 'src/user/interfaces/validRoles';
 import { GetUser } from 'src/user/decorators/get-user-decorator';
 import { User } from 'src/user/entities/user.entity';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('ticket')
 export class TicketController {
@@ -15,11 +16,13 @@ export class TicketController {
 
   @Post()
   @Auth(ValidRoles.CLIENT, ValidRoles.ADMIN)
+  @UseInterceptors(FilesInterceptor('images', 3))
   create(
     @Body() createTicketDto: CreateTicketDto,
-    @GetUser() user: User
+    @GetUser() user: User,
+    @UploadedFiles() files: Array<Express.Multer.File>
   ) {
-    return this.ticketService.create(createTicketDto, user);
+    return this.ticketService.create(createTicketDto, user, files);
   }
 
 

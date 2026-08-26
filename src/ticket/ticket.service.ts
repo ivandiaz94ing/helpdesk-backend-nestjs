@@ -9,10 +9,12 @@ import { GetTicketsFilterDto } from './dto/get-tickets-filter.dto';
 import { User } from 'src/user/entities/user.entity';
 import { ValidRoles } from 'src/user/interfaces/validRoles';
 import { Equipo } from 'src/equipo/entities/equipo.entity';
+import { StorageService } from 'src/storage/storage.service';
 
 @Injectable()
 export class TicketService {
   private readonly logger = new Logger('TicketService');
+  
 
   constructor(
     @InjectRepository(Ticket)
@@ -20,12 +22,19 @@ export class TicketService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Equipo)
-    private readonly equipoRepository: Repository<Equipo>
+    private readonly equipoRepository: Repository<Equipo>,
+
+    private readonly storageService: StorageService,
+    
   ) {
     
   }
 
-  async create(createTicketDto: CreateTicketDto, user: User) {
+  async create(
+    createTicketDto: CreateTicketDto, 
+    user: User, 
+    files: Array<Express.Multer.File>) {
+    const imageUrls = await this.storageService.uploadImages(files);
     const { equipoId, ...detallesTicket } = createTicketDto;
 
     // 1. Buscamos el equipo para asegurarnos de que existe
@@ -40,7 +49,9 @@ export class TicketService {
       const ticket = this.ticketRepository.create({
         ...detallesTicket,
         equipo,
-        user
+        user,
+        images: imageUrls,
+        
       });
 
       await this.ticketRepository.save(ticket);

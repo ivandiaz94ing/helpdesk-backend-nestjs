@@ -6,6 +6,7 @@ import { Ticket } from './entities';
 import { UserModule } from 'src/user/user.module';
 import { User } from 'src/user/entities/user.entity';
 import { Equipo } from 'src/equipo/entities/equipo.entity';
+import { StorageModule } from 'src/storage/storage.module';
 
 @Module({
   controllers: [TicketController],
@@ -16,7 +17,8 @@ import { Equipo } from 'src/equipo/entities/equipo.entity';
       User,
       Equipo
     ]),  
-      UserModule
+      UserModule,
+      StorageModule
 ]
 })
 export class TicketModule {}
