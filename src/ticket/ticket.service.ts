@@ -64,14 +64,23 @@ export class TicketService {
   }
 
 
-  async findAllFiltered(filterDto: GetTicketsFilterDto) {
+  async findAllFiltered(filterDto: GetTicketsFilterDto, currentUser: User) {
   // Creamos el objeto de opciones
   const {status, priority, userId} = filterDto;
   const whereOptions: any = {};
 
   if(status) whereOptions.status = status;
   if(priority) whereOptions.priority = priority;
-  if(userId) whereOptions.user = { id: userId };
+  // Aquí está la magia de la validación:
+  if(currentUser.role === ValidRoles.CLIENT){
+    // Si es cliente, SIEMPRE filtramos por su propio ID (es seguro).
+    whereOptions.user = {id: currentUser.id};
+  } else if(currentUser.role === ValidRoles.ADMIN && userId) {
+    // Si es admin y mandó un ID por query, filtramos por ese ID.
+    whereOptions.user = { id: userId };
+  }
+  // (Si es admin y no manda userId, whereOptions.user queda vacío y trae TODOS).
+  
 
   return await this.ticketRepository.find({
     where: whereOptions,
