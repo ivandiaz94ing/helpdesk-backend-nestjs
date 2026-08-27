@@ -3,7 +3,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from './entities/ticket.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { GetTicketsFilterDto } from './dto/get-tickets-filter.dto';
 
 import { User } from 'src/user/entities/user.entity';
@@ -66,19 +66,27 @@ export class TicketService {
 
   async findAllFiltered(filterDto: GetTicketsFilterDto, currentUser: User) {
   // Creamos el objeto de opciones
+  let whereOptions: any = {};
   const {status, priority, userId} = filterDto;
-  const whereOptions: any = {};
 
   if(status) whereOptions.status = status;
   if(priority) whereOptions.priority = priority;
-  // Aquí está la magia de la validación:
+  // 1. CASO CLIENTE
   if(currentUser.role === ValidRoles.CLIENT){
-    // Si es cliente, SIEMPRE filtramos por su propio ID (es seguro).
+    // Si es cliente, SIEMPRE filtramos por su propio ID.
     whereOptions.user = {id: currentUser.id};
+  // 2. CASO ADMIN  
   } else if(currentUser.role === ValidRoles.ADMIN && userId) {
     // Si es admin y mandó un ID por query, filtramos por ese ID.
     whereOptions.user = { id: userId };
+  } else if (currentUser.role === ValidRoles.AGENT){
+    whereOptions = [
+      {...whereOptions, tecnico: {id: currentUser.id}},
+      {...whereOptions, tecnico: IsNull()},
+
+    ];
   }
+
   // (Si es admin y no manda userId, whereOptions.user queda vacío y trae TODOS).
   
 
