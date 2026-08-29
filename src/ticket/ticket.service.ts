@@ -71,10 +71,12 @@ export class TicketService {
 
   if(status) whereOptions.status = status;
   if(priority) whereOptions.priority = priority;
+
   // 1. CASO CLIENTE
   if(currentUser.role === ValidRoles.CLIENT){
     // Si es cliente, SIEMPRE filtramos por su propio ID.
     whereOptions.user = {id: currentUser.id};
+    
   // 2. CASO ADMIN  
   } else if(currentUser.role === ValidRoles.ADMIN && userId) {
     // Si es admin y mandó un ID por query, filtramos por ese ID.
