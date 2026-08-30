@@ -130,8 +130,8 @@ export class TicketService {
     //2. REGLA: Asignación de tecnico (SOLO ADMIN)
     if(tecnicoId) {
       //Si alguien que no es ADMIN intenta asignar un técnico, lo bloqueamos
-      if(user.role !== ValidRoles.ADMIN) {
-        throw new NotFoundException(`Solos los administradores pueden asignar técnicos a los tickets`);
+      if(user.role === ValidRoles.CLIENT ) {
+        throw new NotFoundException(`Tu rol no le permite asignar técnicos a los tickets`);
       }
       const tecnico = await this.userRepository.findOneBy({id: tecnicoId});
       if(!tecnico) throw new NotFoundException(`Técnico con id ${tecnicoId} no encontrado `);
