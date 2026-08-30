@@ -27,7 +27,7 @@ export class TicketController {
 
 
   @Get()
-  @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)
+  @Auth()
   findAllFiltered(
     @Query() filterDto: GetTicketsFilterDto,
     @GetUser() user:User
