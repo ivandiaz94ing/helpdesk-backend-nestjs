@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, Logger, ForbiddenException } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -131,12 +131,21 @@ export class TicketService {
     if(tecnicoId) {
       //Si alguien que no es ADMIN intenta asignar un técnico, lo bloqueamos
       if(user.role === ValidRoles.CLIENT ) {
-        throw new NotFoundException(`Tu rol no le permite asignar técnicos a los tickets`);
+        throw new ForbiddenException(`Los clientes no pueden manipular la asignación de técnico`);
+      }
+      // Reglas estrictas si es el Técnico intentando auto-asignarse
+      if (user.role === ValidRoles.AGENT){
+        if(tecnicoId !== user.id){
+          throw new ForbiddenException('Como técnico, solo puedes tomar tickets para ti mismo, no puedes asignarlos a otros.');
+        }
+        if(ticket.tecnico){
+          throw new ForbiddenException(`Este ticket ya tiene un tecnico asignado`);
+        }
       }
       const tecnico = await this.userRepository.findOneBy({id: tecnicoId});
       if(!tecnico) throw new NotFoundException(`Técnico con id ${tecnicoId} no encontrado `);
 
-      //Verificamos que el técnico tenga el rol de técnico
+      //Verificamos que el usuario a asignar de verdad sea un tecnico
       if(tecnico.role !== ValidRoles.AGENT) {
         throw new NotFoundException(`El usuario asignado debe tener el rol de técnico (AGENT)`);
       }
