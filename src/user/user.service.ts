@@ -59,7 +59,32 @@ export class UserService {
     } catch (error) {
       this.handleError(error);
     }
-  } 
+  }
+  
+  async resetPasswordAdmin(id: string) {
+
+    // 1. Buscamos el usuario con tu método que ya lanza el 404
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`El usuario con el id ${id} no fue encontrado`);
+    }
+    // 2. Generamos la contraseña segura (Cumple con tu Regex: Mayúscula, minúsculas, números)
+    const newPassword = 'Telematica123';
+
+    // 3. Encriptamos y guardamos los cambios
+    user.password = bcrypt.hashSync(newPassword, 10);
+    await this.userRepository.save(user);
+
+    // 4. MUY IMPORTANTE: Borramos la contraseña del objeto en memoria para que no viaje a Angular
+    delete user.password;
+
+    // 5. Retornamos el usuario limpio y un mensaje de éxito                                     
+    return {                                                                                     
+      message: 'Contraseña restablecida correctamente',                                          
+      user                                                                                       
+    };
+  }
 
   async findOne(id: string) {
     const user = await this.userRepository.findOneBy({ id:id });

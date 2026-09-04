@@ -41,6 +41,12 @@ export class UserController {
     return this.userService.changePassword(userId, changePasswordDto);
   }
 
+  @Patch('reset-password/:id')
+  @Auth(ValidRoles.ADMIN)
+  resetPasswordAdmin(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.resetPasswordAdmin(id);
+  }
+
   @Get('check-status')
   @Auth()
   checkAuthStatus(@GetUser() user: User) {
