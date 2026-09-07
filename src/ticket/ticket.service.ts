@@ -67,7 +67,8 @@ export class TicketService {
   async findAllFiltered(filterDto: GetTicketsFilterDto, currentUser: User) {
   // Creamos el objeto de opciones
   let whereOptions: any = {};
-  const {status, priority, userId} = filterDto;
+  
+  const {status, priority, userId, limit, offset} = filterDto;
 
   if(status) whereOptions.status = status;
   if(priority) whereOptions.priority = priority;
@@ -88,12 +89,12 @@ export class TicketService {
 
     ];
   }
-
+  // Usamos findAndCount en vez de find para obtener el total de tickets
   // (Si es admin y no manda userId, whereOptions.user queda vacío y trae TODOS).
-  
-
-  return await this.ticketRepository.find({
+  const [tickets, total] = await this.ticketRepository.findAndCount({
     where: whereOptions,
+    take: limit,
+    skip: offset,
     order: { 
       createdAt: 'DESC',
       comments: {
@@ -110,6 +111,15 @@ export class TicketService {
       }
     },
   });
+  //Devolvemos la data junto con la información util para el frontend
+  return {
+    data: tickets,
+    meta: {
+      total,
+      limit,
+      offset
+    }
+  };
   }
 
   async findOne(id: string) {
