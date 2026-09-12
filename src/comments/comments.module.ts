@@ -12,6 +12,7 @@ import { Ticket } from 'src/ticket/entities';
   imports: [
     TypeOrmModule.forFeature([ Comment, Ticket ]),  
     UserModule
-  ]
+  ],
+  exports: [TypeOrmModule]
 })
 export class CommentsModule {}

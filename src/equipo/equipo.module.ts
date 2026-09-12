@@ -13,6 +13,7 @@ import { UserModule } from 'src/user/user.module';
       Equipo
     ]),
     UserModule,
-  ]
+  ],
+  exports: [TypeOrmModule]
 })
 export class EquipoModule {}

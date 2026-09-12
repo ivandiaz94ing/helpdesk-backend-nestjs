@@ -19,6 +19,7 @@ import { StorageModule } from 'src/storage/storage.module';
     ]),  
       UserModule,
       StorageModule
-]
+],
+exports: [TypeOrmModule]
 })
 export class TicketModule {}
